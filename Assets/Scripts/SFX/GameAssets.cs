@@ -11,8 +11,8 @@ public class GameAssets : MonoBehaviour
 
     private void Start()
     {
-        if (GameObject.Find("UX_Main") != null)
-            uxVariables = GameObject.Find("UX_Main").GetComponent<Shared_UXVariables>();
+        //if (GameObject.Find("UX_Main") != null)
+            //uxVariables = GameObject.Find("UX_Main").GetComponent<Shared_UXVariables>();
     }
 
     public void Update()
