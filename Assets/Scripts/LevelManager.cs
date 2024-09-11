@@ -75,8 +75,9 @@ public class LevelManager : MonoBehaviour
         {
             gameManager.gameState = GameManager.GameState.Settings;
         }
-        if (levelName == "MainMenu")
+        if (levelName == "Main Menu")
         {
+            Time.timeScale = 1;
             gameManager.gameState = GameManager.GameState.MainMenu;
         }
         if (levelName == "GameOver")
@@ -103,18 +104,17 @@ public class LevelManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        //gameManager.spawnPoint = GameObject.FindWithTag("SpawnPoint");
-        //if (scene.name == "Gameplay_Town1" && previousScene != "MainMenu")
-        //{
-        //    gameManager.spawnPoint.transform.position = new Vector2(60, -1);
-        //}
-        //gameManager.MovePlayerToSpawnPoint();
-        //SceneManager.sceneLoaded -= OnSceneLoaded;
+        if (gameManager.playerSprite.activeSelf == true)
+        {
+            gameManager.spawnPoint = GameObject.FindWithTag("SpawnPoint");
+            gameManager.MovePlayerToSpawnPoint();
+        }
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void OnPreviousSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        gameManager.MovePlayerToPreviousLocation();
+        //gameManager.MovePlayerToPreviousLocation();
         SceneManager.sceneLoaded -= OnPreviousSceneLoaded;
     }
 
