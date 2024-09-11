@@ -11,6 +11,8 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField] private float deviation;
     [SerializeField] private int magSize;
     [SerializeField] private int totalAmmo;
+    [SerializeField] private float critChance = 5f;
+    [SerializeField] private float critMult = 1.5f;
 
     //tracked values
     private int ammoInMag;
