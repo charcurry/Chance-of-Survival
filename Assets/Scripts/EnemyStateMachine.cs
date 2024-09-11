@@ -9,11 +9,16 @@ public class EnemyStateMachine : MonoBehaviour
     public Vector2 target;
     private PlayerMovement player;
     public bool ranged;
+    public bool sniper;
+    public bool uzi;
+    public bool pistol;
 
-    public int rangedAttackDistance;
-    public int attackDistance;
+    public int sniperAttackDistance;
+    public int pistolAttackDistance;
     public float attackTimerDuration;
     [SerializeField] private float attackTimer;
+
+    public int sniperRetreatDistance;
 
     public enum EnemyStates
     {
@@ -41,11 +46,33 @@ public class EnemyStateMachine : MonoBehaviour
             case EnemyStates.chase:
                 target = player.transform.position;
                 navMeshAgent.SetDestination(target);
-                if (ranged)
+                if (uzi)
                 {
-                    if (Vector2.Distance(transform.position, target) < rangedAttackDistance)
+                    //uzi will not have an "attack state", it will attack while chasing.
+                    //attack here
+                }
+                if (sniper || pistol)
+                {
+                    if (pistol)
                     {
-                        enemyState = EnemyStates.attack;
+                        if (Vector2.Distance(transform.position, target) < pistolAttackDistance)
+                        {
+                            enemyState = EnemyStates.attack;
+                        }
+                    }
+                    if (sniper)
+                    {
+                        if (Vector2.Distance(transform.position, target) < sniperAttackDistance)
+                        {
+                            enemyState = EnemyStates.attack;
+                        }
+                    }
+                }
+                if (sniper)
+                {
+                    if (Vector2.Distance(transform.position, target) < sniperRetreatDistance)
+                    {
+                        enemyState = EnemyStates.retreat;
                     }
                 }
                 break;
@@ -53,19 +80,53 @@ public class EnemyStateMachine : MonoBehaviour
                 attackTimer -= Time.deltaTime;
                 if (attackTimer <= 0f)
                 {
-                    if (Vector2.Distance(transform.position, player.transform.position) > attackDistance)
+                    if (pistol)
+                    {
+                        //attack
+                        attackTimer = attackTimerDuration;
+                    }
+                    else if (sniper)
+                    {
+                        //attack
+                        attackTimer = attackTimerDuration;
+                    }
+                }
+                if (pistol)
+                {
+                    if (Vector2.Distance(transform.position, player.transform.position) > pistolAttackDistance)
                     {
                         enemyState = EnemyStates.chase;
                         attackTimer = attackTimerDuration;
                     }
-                    else
+                }
+                if (sniper)
+                {
+                    if (Vector2.Distance(transform.position, player.transform.position) > sniperAttackDistance)
                     {
+                        enemyState = EnemyStates.chase;
+                        attackTimer = attackTimerDuration;
+                    }
+                    if (Vector2.Distance(transform.position, target) < sniperRetreatDistance)
+                    {
+                        enemyState = EnemyStates.retreat;
                         attackTimer = attackTimerDuration;
                     }
                 }
                 break;
+            // Sniper ONLY
             case EnemyStates.retreat:
+                target = transform.position - player.transform.position;
+                navMeshAgent.SetDestination(target);
+                if (Vector2.Distance(transform.position, player.transform.position) > sniperRetreatDistance)
+                {
+                    enemyState = EnemyStates.chase;
+                }
                 break;
         }
     }
 }
+
+//sniper will chase the player and attack when it gets close enough, but run away when you get too close.
+//pistol will chase the player and stand there and attack when it gets close enough, and will not retreat. It will reposition when you get out of range.
+//uzi will chase the player and attack while chasing the player. It does not care if you are too close.
+//melee will chase the player and will do contact damage to the player. It does not retreat or "attack".
