@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     private UIManager uiManager;
 
     //private CharacterController2D player;
-    //public GameObject playerSprite;
+    public GameObject playerSprite;
     //public GameObject spawnPoint;
     //public Vector2 lastPlayerPosition;
 
@@ -64,14 +64,14 @@ public class GameManager : MonoBehaviour
     private void MainMenu()
     {
         Cursor.visible = true;
-        //playerSprite.SetActive(false);
+        playerSprite.SetActive(false);
         uiManager.UIMainMenu();
     }
 
     private void Gameplay()
     {
         Cursor.visible = false;
-        //playerSprite.SetActive(true);
+        playerSprite.SetActive(true);
         //lastPlayerPosition = player.transform.position;
         uiManager.UIGameplay();
     }
@@ -79,29 +79,22 @@ public class GameManager : MonoBehaviour
     private void Settings()
     {
         Cursor.visible = true;
-        //playerSprite.SetActive(false);
+        playerSprite.SetActive(false);
         uiManager.UISettings();
     }
 
     private void Pause()
     {
         Cursor.visible = true;
-        //playerSprite.SetActive(true);
+        playerSprite.SetActive(true);
         uiManager.UIPause();
     }
 
     private void GameOver()
     {
         Cursor.visible = true;
-        //playerSprite.SetActive(false);
+        playerSprite.SetActive(false);
         uiManager.UIGameOver();
-    }
-
-    private void GameWin()
-    {
-        Cursor.visible = true;
-        //playerSprite.SetActive(false);
-        uiManager.UIGameWin();
     }
 
     public void PauseGame()
