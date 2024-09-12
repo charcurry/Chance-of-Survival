@@ -20,6 +20,12 @@ public class BulletTrail : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        progress += Time.deltaTime * speed;
+        transform.position = Vector3.Lerp(startPos, targetPos, progress);
+    }
+
+    public void SetTargetPosition(Vector3 taargetPos)
+    {
+        this.targetPos = taargetPos.WithAxis(VectorsExtension.Axis.Z, value:-1);
     }
 }
