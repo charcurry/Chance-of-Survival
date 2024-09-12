@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -47,6 +48,7 @@ public class Weapon : MonoBehaviour
                 fireRate = 2.5f;
                 deviation = 10f;
                 magSize = 12;
+                reloadTime = 2.5f;
                 totalAmmo = 60;
                 critChance = 5;
                 critMult = 1.5f;
@@ -59,6 +61,7 @@ public class Weapon : MonoBehaviour
                 fireRate = 10f;
                 deviation = 60f;
                 magSize = 30;
+                reloadTime = 4.5f;
                 totalAmmo = 150;
                 critChance = 3;
                 critMult = 1.5f;
@@ -71,6 +74,7 @@ public class Weapon : MonoBehaviour
                 fireRate = 1f;
                 deviation = 0f;
                 magSize = 4;
+                reloadTime= 4f;
                 totalAmmo = 20;
                 critChance = 5;
                 critMult = 1.5f;
@@ -96,10 +100,10 @@ public class Weapon : MonoBehaviour
 
     public void Fire()
     {
-        /*
+        
         //check mag
         if (ammoInMag > 0)
-        {*/
+        {
             ammoInMag--; //remove 1 ammo
 
             //detection
@@ -138,23 +142,28 @@ public class Weapon : MonoBehaviour
                 var endPos = muzzle.position + direction * range;
                 trailScript.SetTargetPosition(endPos);
             }
-        /*
+        
         }
         else
         {
+            Debug.Log("Gun empty");
             //play click effect
         }
-        */
+        
     }
 
     public void Reload()
     {
-        /*
+        
         if (totalAmmo > 0)
         {
-
+            StartCoroutine("LoadGun");
         }
-        */
+        else
+        {
+            //play vine boom
+        }
+        
     }
 
     public int GetAmmoInMag()
@@ -169,6 +178,37 @@ public class Weapon : MonoBehaviour
         Vector3 direction3D = Quaternion.AngleAxis(deviationAngle, Vector3.forward) * transform.right; //applying transformation to base vector
 
         return direction3D;
+    }
+
+    //co-routine that loads/reload the gun
+    private IEnumerator LoadGun()
+    {
+        Debug.Log("reload started");
+
+        //implement load timer
+        float timer = 0f;
+        while (timer < reloadTime)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        //moving ammo around
+        ammoInMag += totalAmmo;
+
+        if (ammoInMag > magSize)
+        {
+            ammoInMag = magSize;
+        }
+
+        totalAmmo -= ammoInMag;
+
+        if (totalAmmo < 0)
+        {
+            totalAmmo = 0;
+        }
+
+        Debug.Log("reload finished");
     }
      
 }
