@@ -93,7 +93,10 @@ public class Weapon : MonoBehaviour
 
     }
 
-    public abstract void Reload();
+    public void Reload()
+    {
+
+    }
 
     public int GetAmmoInMag()
     {
