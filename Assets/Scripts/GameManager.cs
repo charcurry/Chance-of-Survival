@@ -7,9 +7,9 @@ public class GameManager : MonoBehaviour
 {
     private UIManager uiManager;
 
-    //private CharacterController2D player;
-    //public GameObject playerSprite;
-    //public GameObject spawnPoint;
+    private PlayerMovement player;
+    public GameObject playerSprite;
+    public GameObject spawnPoint;
     //public Vector2 lastPlayerPosition;
 
     public enum GameState
@@ -27,9 +27,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //spawnPoint = GameObject.FindWithTag("SpawnPoint");
+        spawnPoint = GameObject.FindWithTag("SpawnPoint");
         uiManager = FindObjectOfType<UIManager>();
-        //player = FindObjectOfType<CharacterController2D>();
+        player = FindObjectOfType<PlayerMovement>();
         gameState = GameState.MainMenu;
     }
 
@@ -64,14 +64,14 @@ public class GameManager : MonoBehaviour
     private void MainMenu()
     {
         Cursor.visible = true;
-        //playerSprite.SetActive(false);
+        playerSprite.SetActive(false);
         uiManager.UIMainMenu();
     }
 
     private void Gameplay()
     {
-        Cursor.visible = false;
-        //playerSprite.SetActive(true);
+        Cursor.visible = true;
+        playerSprite.SetActive(true);
         //lastPlayerPosition = player.transform.position;
         uiManager.UIGameplay();
     }
@@ -79,29 +79,22 @@ public class GameManager : MonoBehaviour
     private void Settings()
     {
         Cursor.visible = true;
-        //playerSprite.SetActive(false);
+        playerSprite.SetActive(false);
         uiManager.UISettings();
     }
 
     private void Pause()
     {
         Cursor.visible = true;
-        //playerSprite.SetActive(true);
+        playerSprite.SetActive(false);
         uiManager.UIPause();
     }
 
     private void GameOver()
     {
         Cursor.visible = true;
-        //playerSprite.SetActive(false);
+        playerSprite.SetActive(false);
         uiManager.UIGameOver();
-    }
-
-    private void GameWin()
-    {
-        Cursor.visible = true;
-        //playerSprite.SetActive(false);
-        uiManager.UIGameWin();
     }
 
     public void PauseGame()
@@ -112,7 +105,7 @@ public class GameManager : MonoBehaviour
             gameState = GameState.Pause;
             Time.timeScale = 0;
         }
-        else if (gameState == GameState.Pause)
+        else if (gameState == GameState.Pause || gameState == GameState.Settings)
         {
             gameState = previousGameState;
             Time.timeScale = 1;
@@ -126,17 +119,33 @@ public class GameManager : MonoBehaviour
 
     public void OpenSettings()
     {
-        Settings();
+        if (gameState != GameState.Pause)
+        {
+            previousGameState = gameState;
+        }
+        gameState = GameState.Settings;
     }
 
     public void MovePlayerToSpawnPoint()
     {
-        //player.transform.position = spawnPoint.transform.position;
+        player.transform.position = spawnPoint.transform.position;
     }
 
     public void MovePlayerToPreviousLocation()
     {
         //player.transform.position = lastPlayerPosition;
+    }
+    public void Back()
+    {
+        if (previousGameState != GameState.MainMenu)
+        {
+            gameState = GameState.Pause;
+        }
+        else
+        {
+            gameState = previousGameState;
+            Time.timeScale = 1;
+        }
     }
 
 }
