@@ -31,9 +31,13 @@ public class Weapon : MonoBehaviour
     [SerializeField] private GameObject bulletTrail;
     [SerializeField] private Animator muzzFlashAnimator;
 
+    [Header("Debug")]
+    [SerializeField] private WeaponType startingType;
+
     //tracked values
     private int ammoInMag;
     private bool cooldown = false;
+    private bool buttonDown = false;
 
     public void ChangeWeapon (WeaponType weaponType)
     {
@@ -89,13 +93,34 @@ public class Weapon : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ChangeWeapon(WeaponType.pistol);
+        ChangeWeapon(startingType);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (buttonDown && !cooldown)
+        {
+            Fire();
+            StartCoroutine("FiringCooldown");
+
+            if (!automatic)
+            {
+                buttonDown = false;
+            }
+        }
+    }
+
+    public void Attack(InputAction.CallbackContext input)
+    {
+        if (input.performed)
+        {
+            buttonDown = true;
+        }
+        if (input.canceled)
+        {
+            buttonDown = false;
+        }
     }
 
     public void Fire()
@@ -161,7 +186,7 @@ public class Weapon : MonoBehaviour
         }
         else
         {
-            //play vine boom
+            //play vine boom or something
         }
         
     }
@@ -209,6 +234,20 @@ public class Weapon : MonoBehaviour
         }
 
         Debug.Log("reload finished");
+    }
+
+    private IEnumerator FiringCooldown()
+    {
+        cooldown = true;
+        float timer = 0f;
+
+        while (timer < 1/fireRate)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        cooldown = false;
     }
      
 }

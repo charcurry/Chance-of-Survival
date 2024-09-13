@@ -234,6 +234,7 @@ MonoBehaviour:
   muzzle: {fileID: 2060066317}
   bulletTrail: {fileID: 4293536857185497280, guid: b022e1857672dca4aacc3fc1968d7477, type: 3}
   muzzFlashAnimator: {fileID: 0}
+  startingType: 1
 --- !u!1 &878190988
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,8 +413,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 607945855}
         m_TargetAssemblyTypeName: Weapon, Assembly-CSharp
-        m_MethodName: Fire
-        m_Mode: 1
+        m_MethodName: Attack
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
