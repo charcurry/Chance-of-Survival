@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -25,17 +27,31 @@ public class Weapon : MonoBehaviour
     [SerializeField] private float critChance; //the percentage change that a crit will occur
     [SerializeField] private float critMult; //the multiplier for damage done on crit
 
-    [Header("Weapon Fire Visuals")]
-    [SerializeField] private Transform muzzle;
+    [Header("Visuals")]
+    [SerializeField] private Transform pistolMuzzle;
+    [SerializeField] private Transform smgMuzzle;
+    [SerializeField] private Transform sniperMuzzle;
+    [SerializeField] private SpriteRenderer pistolSprite;
+    [SerializeField] private SpriteRenderer smgSprite;
+    [SerializeField] private SpriteRenderer sniperSprite;
     [SerializeField] private GameObject bulletTrail;
-    [SerializeField] private Animator muzzFlashAnimator;
+    //[SerializeField] private GameObject muzzleFlash;
+    //[SerializeField] private SpriteRenderer muzzleFlashRenderer;
+    //[SerializeField] private float flashtime = 0.05f;
+
+    [Header("Debug")]
+    [SerializeField] private WeaponType startingType;
 
     //tracked values
+    private Transform muzzle;
     private int ammoInMag;
     private bool cooldown = false;
+    private bool buttonDown = false;
 
     public void ChangeWeapon (WeaponType weaponType)
     {
+        Debug.Log("weapon change started");
+
         this.weaponType = weaponType;
 
         switch (weaponType)
@@ -47,6 +63,7 @@ public class Weapon : MonoBehaviour
                 fireRate = 2.5f;
                 deviation = 10f;
                 magSize = 12;
+                reloadTime = 2.5f;
                 totalAmmo = 60;
                 critChance = 5;
                 critMult = 1.5f;
@@ -59,6 +76,7 @@ public class Weapon : MonoBehaviour
                 fireRate = 10f;
                 deviation = 60f;
                 magSize = 30;
+                reloadTime = 4.5f;
                 totalAmmo = 150;
                 critChance = 3;
                 critMult = 1.5f;
@@ -71,11 +89,18 @@ public class Weapon : MonoBehaviour
                 fireRate = 1f;
                 deviation = 0f;
                 magSize = 4;
+                reloadTime= 4f;
                 totalAmmo = 20;
                 critChance = 5;
                 critMult = 1.5f;
                 break;
         }
+
+        //switch sprite
+        SwitchSprite();
+
+        //switch muzzle
+        SwitchMuzzle();
 
         //mag changes
         ammoInMag = 0;
@@ -85,21 +110,42 @@ public class Weapon : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ChangeWeapon(WeaponType.pistol);
+        ChangeWeapon(startingType);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (buttonDown && !cooldown)
+        {
+            Fire();
+            StartCoroutine("FiringCooldown");
+
+            if (!automatic)
+            {
+                buttonDown = false;
+            }
+        }
+    }
+
+    public void Attack(InputAction.CallbackContext input)
+    {
+        if (input.performed)
+        {
+            buttonDown = true;
+        }
+        if (input.canceled)
+        {
+            buttonDown = false;
+        }
     }
 
     public void Fire()
     {
-        /*
+        
         //check mag
         if (ammoInMag > 0)
-        {*/
+        {
             ammoInMag--; //remove 1 ammo
 
             //detection
@@ -138,23 +184,28 @@ public class Weapon : MonoBehaviour
                 var endPos = muzzle.position + direction * range;
                 trailScript.SetTargetPosition(endPos);
             }
-        /*
+        
         }
         else
         {
+            Debug.Log("Gun empty");
             //play click effect
         }
-        */
+        
     }
 
     public void Reload()
     {
-        /*
+        
         if (totalAmmo > 0)
         {
-
+            StartCoroutine("LoadGun");
         }
-        */
+        else
+        {
+            //play vine boom or something
+        }
+        
     }
 
     public int GetAmmoInMag()
@@ -169,6 +220,117 @@ public class Weapon : MonoBehaviour
         Vector3 direction3D = Quaternion.AngleAxis(deviationAngle, Vector3.forward) * transform.right; //applying transformation to base vector
 
         return direction3D;
+    }
+
+    private void SwitchSprite()
+    {
+        Debug.Log("Switch Sprite Started");
+
+        switch (weaponType)
+        {
+            case WeaponType.pistol:
+                Debug.Log("Switched to pistol");
+                pistolSprite.enabled = true;
+                smgSprite.enabled = false;
+                sniperSprite.enabled = false;
+                break;
+
+            case WeaponType.smg:
+                Debug.Log("Switched to smg");
+                pistolSprite.enabled = false;
+                smgSprite.enabled = true;
+                sniperSprite.enabled = false;
+                break;
+
+            case WeaponType.sniper:
+                Debug.Log("Switched to sniper");
+                pistolSprite.enabled = false;
+                smgSprite.enabled = false;
+                sniperSprite.enabled = true;
+                break;
+        }
+    }
+
+    private void SwitchMuzzle()
+    {
+
+        switch (weaponType)
+        {
+            case WeaponType.pistol:
+                muzzle = pistolMuzzle;
+                //muzzleFlash.transform.position = pistolMuzzle.transform.position;
+                break;
+
+            case WeaponType.smg:
+                muzzle = smgMuzzle;
+                //muzzleFlash.transform.position = smgMuzzle.transform.position;
+                break;
+
+            case WeaponType.sniper:
+                muzzle = sniperMuzzle;
+                //muzzleFlash.transform.position = sniperMuzzle.transform.position;
+                break;
+        }
+    }
+
+    /*
+    private IEnumerator MuzzleFlash()
+    {
+        float timer = 0f;
+        muzzleFlashRenderer.color = new Color(255,255,255,255);
+
+        while (muzzleFlashRenderer.color.a > 0)
+        {
+            timer += Time.deltaTime;
+            muzzleFlashRenderer.color = new Color(255, 255, 255, Mathf.Lerp(255,0,timer/flashtime));
+            yield return null;
+        }
+    }
+    */
+
+    //co-routine that loads/reload the gun
+    private IEnumerator LoadGun()
+    {
+        Debug.Log("reload started");
+
+        //implement load timer
+        float timer = 0f;
+        while (timer < reloadTime)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        //moving ammo around
+        ammoInMag += totalAmmo;
+
+        if (ammoInMag > magSize)
+        {
+            ammoInMag = magSize;
+        }
+
+        totalAmmo -= ammoInMag;
+
+        if (totalAmmo < 0)
+        {
+            totalAmmo = 0;
+        }
+
+        Debug.Log("reload finished");
+    }
+
+    private IEnumerator FiringCooldown()
+    {
+        cooldown = true;
+        float timer = 0f;
+
+        while (timer < 1/fireRate)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        cooldown = false;
     }
      
 }
