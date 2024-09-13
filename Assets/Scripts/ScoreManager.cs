@@ -32,4 +32,9 @@ public class ScoreManager : MonoBehaviour
         gamePlayHighScore.text = "High Score: " + PlayerPrefs.GetInt("highScore").ToString();
         gameOverHighScore.text = "High Score: " + PlayerPrefs.GetInt("highScore").ToString();
     }
+
+    public void ResetScore()
+    {
+        playerScore = 0;
+    }
 }
