@@ -13,6 +13,15 @@ public class Health : MonoBehaviour
     //tracked variables
     private float currentHealth;
 
+    private ScoreManager scoreManager;
+    private EnemyStateMachine enemy;
+
+    public void Start()
+    {
+        scoreManager = FindObjectOfType<ScoreManager>();
+        enemy = GetComponent<EnemyStateMachine>();
+    }
+
     //Method that deals damage to entity
     public bool TakeDamage(float damage)
     {
@@ -20,6 +29,12 @@ public class Health : MonoBehaviour
         if (!(Random.Range(1f, 100f) <= evasionChance))
         {
             currentHealth -= damage / damageRes; //applies damage
+            if (currentHealth <= 0) //checks if entity is dead
+            {
+                Destroy(gameObject);
+                scoreManager.AddScore(500, enemy.enemyType);
+                return true;
+            }
             return true;
         }
         else

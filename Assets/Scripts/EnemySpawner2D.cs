@@ -2,20 +2,21 @@ using UnityEngine;
 
 public class EnemySpawner2D : MonoBehaviour
 {
-    public GameObject[] enemyPrefabs;  // The enemy prefab to spawn
-    public float spawnDistance = 15f;  // Distance from the player to spawn enemies
-    public float spawnInterval = 2f;  // Time interval between spawns
-    public Vector2 xBounds = new Vector2(-20f, 20f); // X axis bounds for offscreen positions
-    public Vector2 yBounds = new Vector2(-20f, 20f); // Y axis bounds for offscreen positions
-    private PlayerMovement playerMovement;
+    public GameObject[] enemyPrefabs;    // Array of enemy prefabs to spawn
+    public float spawnDistance = 15f;    // Distance from the player to spawn enemies
+    public float spawnInterval = 2f;     // Time interval between spawns
+    public float yOffset = 5f;           // Offset to prevent spawning too close to the screen edges
+    public Vector2 playAreaMin;          // Minimum x and y bounds for spawning
+    public Vector2 playAreaMax;          // Maximum x and y bounds for spawning
 
+    private PlayerMovement player;
     private Transform playerTransform;
     private float timer;
 
     void Start()
     {
-        playerMovement = FindObjectOfType<PlayerMovement>();
-        playerTransform = playerMovement.transform;
+        player = FindObjectOfType<PlayerMovement>();
+        playerTransform = player.transform;
         timer = spawnInterval;
     }
 
@@ -38,6 +39,7 @@ public class EnemySpawner2D : MonoBehaviour
             return;
         }
 
+        // Choose a random enemy prefab
         GameObject enemyPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
 
         Vector3 spawnPosition = GetRandomOffscreenPosition();
@@ -55,20 +57,20 @@ public class EnemySpawner2D : MonoBehaviour
         switch (direction)
         {
             case 0: // Spawn to the left
-                spawnPosition.x -= spawnDistance;
-                spawnPosition.y = Random.Range(yBounds.x, yBounds.y);
+                spawnPosition.x = Mathf.Clamp(playerPosition.x - spawnDistance, playAreaMin.x, playAreaMax.x);
+                spawnPosition.y = Random.Range(playAreaMin.y + yOffset, playAreaMax.y - yOffset);
                 break;
             case 1: // Spawn to the right
-                spawnPosition.x += spawnDistance;
-                spawnPosition.y = Random.Range(yBounds.x, yBounds.y);
+                spawnPosition.x = Mathf.Clamp(playerPosition.x + spawnDistance, playAreaMin.x, playAreaMax.x);
+                spawnPosition.y = Random.Range(playAreaMin.y + yOffset, playAreaMax.y - yOffset);
                 break;
             case 2: // Spawn above
-                spawnPosition.y += spawnDistance;
-                spawnPosition.x = Random.Range(xBounds.x, xBounds.y);
+                spawnPosition.y = Mathf.Clamp(playerPosition.y + spawnDistance, playAreaMin.y, playAreaMax.y);
+                spawnPosition.x = Random.Range(playAreaMin.x + yOffset, playAreaMax.x - yOffset);
                 break;
             case 3: // Spawn below
-                spawnPosition.y -= spawnDistance;
-                spawnPosition.x = Random.Range(xBounds.x, xBounds.y);
+                spawnPosition.y = Mathf.Clamp(playerPosition.y - spawnDistance, playAreaMin.y, playAreaMax.y);
+                spawnPosition.x = Random.Range(playAreaMin.x + yOffset, playAreaMax.x - yOffset);
                 break;
         }
 

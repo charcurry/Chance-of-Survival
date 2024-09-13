@@ -138,7 +138,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &37326663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,8 +158,9 @@ MonoBehaviour:
   - {fileID: 8517284436937347961, guid: 94e9cff933ebb70469a6b77544f5a581, type: 3}
   spawnDistance: 15
   spawnInterval: 2
-  xBounds: {x: -20, y: 20}
-  yBounds: {x: -20, y: 20}
+  yOffset: 5
+  playAreaMin: {x: -40, y: -25}
+  playAreaMax: {x: 30, y: 30}
 --- !u!4 &37326664
 Transform:
   m_ObjectHideFlags: 0

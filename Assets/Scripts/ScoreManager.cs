@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static EnemyStateMachine;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -36,5 +37,25 @@ public class ScoreManager : MonoBehaviour
     public void ResetScore()
     {
         playerScore = 0;
+    }
+
+    public void AddScore(int score, EnemyTypes enemyType)
+    {
+        if (enemyType == EnemyTypes.pistol)
+        {
+            playerScore += score * 2;
+        }
+        else if (enemyType == EnemyTypes.uzi)
+        {
+            playerScore += score * 3;
+        }
+        else if (enemyType == EnemyTypes.sniper)
+        {
+            playerScore += score * 4;
+        }
+        else if (enemyType == EnemyTypes.melee)
+        {
+            playerScore += score;
+        }
     }
 }

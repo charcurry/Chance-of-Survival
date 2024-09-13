@@ -5,13 +5,9 @@ using UnityEngine.AI;
 
 public class EnemyStateMachine : MonoBehaviour
 {
-    private NavMeshAgent navMeshAgent;
+    //private NavMeshAgent navMeshAgent;
     public Vector2 target;
     private PlayerMovement player;
-    public bool ranged;
-    public bool sniper;
-    public bool uzi;
-    public bool pistol;
 
     public int sniperAttackDistance;
     public int pistolAttackDistance;
@@ -27,13 +23,22 @@ public class EnemyStateMachine : MonoBehaviour
         retreat
     }
 
+    public enum EnemyTypes
+    {
+        sniper,
+        pistol,
+        uzi,
+        melee
+    }
+
     public EnemyStates enemyState;
+    public EnemyTypes enemyType;
 
     // Start is called before the first frame update
     void Start()
     {
         player = FindObjectOfType<PlayerMovement>();
-        navMeshAgent = GetComponent<NavMeshAgent>();
+        //navMeshAgent = GetComponent<NavMeshAgent>();
         enemyState = EnemyStates.chase;
         attackTimer = attackTimerDuration;
     }
@@ -45,22 +50,22 @@ public class EnemyStateMachine : MonoBehaviour
         {
             case EnemyStates.chase:
                 target = player.transform.position;
-                navMeshAgent.SetDestination(target);
-                if (uzi)
+                //navMeshAgent.SetDestination(target);
+                if (enemyType == EnemyTypes.uzi)
                 {
                     //uzi will not have an "attack state", it will attack while chasing.
                     //attack here
                 }
-                if (sniper || pistol)
+                if (enemyType == EnemyTypes.sniper || enemyType == EnemyTypes.pistol)
                 {
-                    if (pistol)
+                    if (enemyType == EnemyTypes.pistol)
                     {
                         if (Vector2.Distance(transform.position, target) < pistolAttackDistance)
                         {
                             enemyState = EnemyStates.attack;
                         }
                     }
-                    if (sniper)
+                    if (enemyType == EnemyTypes.sniper)
                     {
                         if (Vector2.Distance(transform.position, target) < sniperAttackDistance)
                         {
@@ -68,7 +73,7 @@ public class EnemyStateMachine : MonoBehaviour
                         }
                     }
                 }
-                if (sniper)
+                if (enemyType == EnemyTypes.sniper)
                 {
                     if (Vector2.Distance(transform.position, target) < sniperRetreatDistance)
                     {
@@ -80,18 +85,18 @@ public class EnemyStateMachine : MonoBehaviour
                 attackTimer -= Time.deltaTime;
                 if (attackTimer <= 0f)
                 {
-                    if (pistol)
+                    if (enemyType == EnemyTypes.pistol)
                     {
                         //attack
                         attackTimer = attackTimerDuration;
                     }
-                    else if (sniper)
+                    else if (enemyType == EnemyTypes.sniper)
                     {
                         //attack
                         attackTimer = attackTimerDuration;
                     }
                 }
-                if (pistol)
+                if (enemyType == EnemyTypes.pistol)
                 {
                     if (Vector2.Distance(transform.position, player.transform.position) > pistolAttackDistance)
                     {
@@ -99,7 +104,7 @@ public class EnemyStateMachine : MonoBehaviour
                         attackTimer = attackTimerDuration;
                     }
                 }
-                if (sniper)
+                if (enemyType == EnemyTypes.sniper)
                 {
                     if (Vector2.Distance(transform.position, player.transform.position) > sniperAttackDistance)
                     {
@@ -116,7 +121,7 @@ public class EnemyStateMachine : MonoBehaviour
             // Sniper ONLY
             case EnemyStates.retreat:
                 target = transform.position - player.transform.position;
-                navMeshAgent.SetDestination(target);
+                //navMeshAgent.SetDestination(target);
                 if (Vector2.Distance(transform.position, player.transform.position) > sniperRetreatDistance)
                 {
                     enemyState = EnemyStates.chase;

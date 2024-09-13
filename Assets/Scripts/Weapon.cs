@@ -303,6 +303,7 @@ public class Weapon : MonoBehaviour
         float timer = 0f;
         while (timer < reloadTime)
         {
+            ammoText.text = "Reloading: " + ((int)(timer / reloadTime * 100)).ToString() + "%";
             timer += Time.deltaTime;
             yield return null;
         }
