@@ -7,10 +7,12 @@ using UnityEngine.SceneManagement;
 public class LevelManager : MonoBehaviour
 {
     GameManager gameManager;
+    ScoreManager scoreManager;
     public string previousScene;
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        scoreManager = FindObjectOfType<ScoreManager>();
     }
 
     private void Update()
@@ -78,6 +80,7 @@ public class LevelManager : MonoBehaviour
         if (levelName == "Main Menu")
         {
             Time.timeScale = 1;
+            scoreManager.ResetScore();
             gameManager.gameState = GameManager.GameState.MainMenu;
         }
         if (levelName == "GameOver")
