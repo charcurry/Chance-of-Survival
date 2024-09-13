@@ -195,9 +195,17 @@ public class Weapon : MonoBehaviour
         else
         {
             Debug.Log("Gun empty");
-            //play click effect
+            Reload();
         }
         
+    }
+
+    public void ReloadButton(InputAction.CallbackContext input)
+    {
+        if (input.performed)
+        {
+            Reload();
+        }
     }
 
     public void Reload()
