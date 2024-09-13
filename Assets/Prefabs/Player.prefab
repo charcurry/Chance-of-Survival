@@ -531,8 +531,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1452572943736696516}
         m_TargetAssemblyTypeName: Weapon, Assembly-CSharp
-        m_MethodName: Reload
-        m_Mode: 1
+        m_MethodName: ReloadButton
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -594,6 +594,7 @@ MonoBehaviour:
   sniperSprite: {fileID: 8857213572739109758}
   bulletTrail: {fileID: 4293536857185497280, guid: b022e1857672dca4aacc3fc1968d7477, type: 3}
   startingType: 2
+  ammoText: {fileID: 0}
 --- !u!61 &6550685015065248027
 BoxCollider2D:
   m_ObjectHideFlags: 0
