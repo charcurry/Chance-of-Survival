@@ -18,7 +18,8 @@ public class GameManager : MonoBehaviour
         Gameplay,
         Settings,
         Pause,
-        GameOver
+        GameOver,
+        Credits
     }
 
     public GameState gameState;
@@ -57,6 +58,9 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.GameOver:
                 GameOver();
+                break;
+            case GameState.Credits:
+                Credits();
                 break;
         }
     }
@@ -97,6 +101,13 @@ public class GameManager : MonoBehaviour
         uiManager.UIGameOver();
     }
 
+    private void Credits()
+    {
+        Cursor.visible = true;
+        playerSprite.SetActive(false);
+        uiManager.UICredits();
+    }
+
     public void PauseGame()
     {
         if (gameState != GameState.Pause && gameState == GameState.Gameplay)
@@ -124,6 +135,11 @@ public class GameManager : MonoBehaviour
             previousGameState = gameState;
         }
         gameState = GameState.Settings;
+    }
+
+    public void OpenCredits()
+    {
+        gameState = GameState.Credits;
     }
 
     public void MovePlayerToSpawnPoint()

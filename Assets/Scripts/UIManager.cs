@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     public GameObject GameplayUI;
     public GameObject SettingsUI;
     public GameObject GameOverUI;
+    public GameObject CreditsUI;
 
     // Start is called before the first frame update
 
@@ -19,6 +20,7 @@ public class UIManager : MonoBehaviour
         GameplayUI.SetActive(false);
         SettingsUI.SetActive(false);
         GameOverUI.SetActive(false);
+        CreditsUI.SetActive(false);
     }
 
     public void UIPause()
@@ -28,6 +30,7 @@ public class UIManager : MonoBehaviour
         GameplayUI.SetActive(false);
         SettingsUI.SetActive(false);
         GameOverUI.SetActive(false);
+        CreditsUI.SetActive(false);
     }
 
     public void UIGameplay()
@@ -37,6 +40,7 @@ public class UIManager : MonoBehaviour
         GameplayUI.SetActive(true);
         SettingsUI.SetActive(false);
         GameOverUI.SetActive(false);
+        CreditsUI.SetActive(false);
     }
 
     public void UISettings()
@@ -46,7 +50,7 @@ public class UIManager : MonoBehaviour
         GameplayUI.SetActive(false);
         SettingsUI.SetActive(true);
         GameOverUI.SetActive(false);
-
+        CreditsUI.SetActive(false);
     }
 
     public void UIGameOver()
@@ -56,5 +60,16 @@ public class UIManager : MonoBehaviour
         GameplayUI.SetActive(false);
         SettingsUI.SetActive(false);
         GameOverUI.SetActive(true);
+        CreditsUI.SetActive(false);
+    }
+
+    public void UICredits()
+    {
+        MainMenuUI.SetActive(false);
+        PauseUI.SetActive(false);
+        GameplayUI.SetActive(false);
+        SettingsUI.SetActive(false);
+        GameOverUI.SetActive(false);
+        CreditsUI.SetActive(true);
     }
 }
