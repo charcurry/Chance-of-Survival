@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using TMPro;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -41,6 +42,9 @@ public class Weapon : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private WeaponType startingType;
+
+    [Header("UI")]
+    [SerializeField] private TextMeshProUGUI ammoText;
 
     //tracked values
     private Transform muzzle;
@@ -126,6 +130,8 @@ public class Weapon : MonoBehaviour
                 buttonDown = false;
             }
         }
+
+        ammoText.text = "Ammo: " + ammoInMag.ToString() + "/" + totalAmmo.ToString();
     }
 
     public void Attack(InputAction.CallbackContext input)
