@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -26,21 +27,31 @@ public class Weapon : MonoBehaviour
     [SerializeField] private float critChance; //the percentage change that a crit will occur
     [SerializeField] private float critMult; //the multiplier for damage done on crit
 
-    [Header("Weapon Fire Visuals")]
-    [SerializeField] private Transform muzzle;
+    [Header("Visuals")]
+    [SerializeField] private Transform pistolMuzzle;
+    [SerializeField] private Transform smgMuzzle;
+    [SerializeField] private Transform sniperMuzzle;
+    [SerializeField] private SpriteRenderer pistolSprite;
+    [SerializeField] private SpriteRenderer smgSprite;
+    [SerializeField] private SpriteRenderer sniperSprite;
     [SerializeField] private GameObject bulletTrail;
-    [SerializeField] private Animator muzzFlashAnimator;
+    //[SerializeField] private GameObject muzzleFlash;
+    //[SerializeField] private SpriteRenderer muzzleFlashRenderer;
+    //[SerializeField] private float flashtime = 0.05f;
 
     [Header("Debug")]
     [SerializeField] private WeaponType startingType;
 
     //tracked values
+    private Transform muzzle;
     private int ammoInMag;
     private bool cooldown = false;
     private bool buttonDown = false;
 
     public void ChangeWeapon (WeaponType weaponType)
     {
+        Debug.Log("weapon change started");
+
         this.weaponType = weaponType;
 
         switch (weaponType)
@@ -84,6 +95,12 @@ public class Weapon : MonoBehaviour
                 critMult = 1.5f;
                 break;
         }
+
+        //switch sprite
+        SwitchSprite();
+
+        //switch muzzle
+        SwitchMuzzle();
 
         //mag changes
         ammoInMag = 0;
@@ -204,6 +221,72 @@ public class Weapon : MonoBehaviour
 
         return direction3D;
     }
+
+    private void SwitchSprite()
+    {
+        Debug.Log("Switch Sprite Started");
+
+        switch (weaponType)
+        {
+            case WeaponType.pistol:
+                Debug.Log("Switched to pistol");
+                pistolSprite.enabled = true;
+                smgSprite.enabled = false;
+                sniperSprite.enabled = false;
+                break;
+
+            case WeaponType.smg:
+                Debug.Log("Switched to smg");
+                pistolSprite.enabled = false;
+                smgSprite.enabled = true;
+                sniperSprite.enabled = false;
+                break;
+
+            case WeaponType.sniper:
+                Debug.Log("Switched to sniper");
+                pistolSprite.enabled = false;
+                smgSprite.enabled = false;
+                sniperSprite.enabled = true;
+                break;
+        }
+    }
+
+    private void SwitchMuzzle()
+    {
+
+        switch (weaponType)
+        {
+            case WeaponType.pistol:
+                muzzle = pistolMuzzle;
+                //muzzleFlash.transform.position = pistolMuzzle.transform.position;
+                break;
+
+            case WeaponType.smg:
+                muzzle = smgMuzzle;
+                //muzzleFlash.transform.position = smgMuzzle.transform.position;
+                break;
+
+            case WeaponType.sniper:
+                muzzle = sniperMuzzle;
+                //muzzleFlash.transform.position = sniperMuzzle.transform.position;
+                break;
+        }
+    }
+
+    /*
+    private IEnumerator MuzzleFlash()
+    {
+        float timer = 0f;
+        muzzleFlashRenderer.color = new Color(255,255,255,255);
+
+        while (muzzleFlashRenderer.color.a > 0)
+        {
+            timer += Time.deltaTime;
+            muzzleFlashRenderer.color = new Color(255, 255, 255, Mathf.Lerp(255,0,timer/flashtime));
+            yield return null;
+        }
+    }
+    */
 
     //co-routine that loads/reload the gun
     private IEnumerator LoadGun()
